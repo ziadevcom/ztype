@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .tool-btn {
+    @apply text-[#646669] hover:text-white mr-4;
+  }
+  .active-tool-btn {
+    @apply text-white;
+  }
+}
