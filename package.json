@@ -1,5 +1,26 @@
 {
   "devDependencies": {
     "tailwindcss": "^3.2.4"
-  }
+  },
+  "dependencies": {
+    "random-words": "^1.2.0"
+  },
+  "name": "ztype2",
+  "version": "1.0.0",
+  "main": "tailwind.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ziadevcom/ztype.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ziadevcom/ztype/issues"
+  },
+  "homepage": "https://github.com/ziadevcom/ztype#readme",
+  "description": ""
 }

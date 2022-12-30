@@ -2,7 +2,7 @@
 const { colors: defaultColors } = require("tailwindcss/defaultTheme");
 
 module.exports = {
-  content: ["public/*.{html,js}"],
+  content: ["src/*.{html,js}"],
   theme: {
     extend: {
       colors: { primary: "#323437", secondary: "#fda4af", white: "#ffffff" },
