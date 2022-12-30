@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>zType</title>
+  </head>
+  <body class="bg-primary">
+    <div
+      class="w-screen h-screen place-items-center grid grid-rows-[auto_1fr_auto] font-josef"
+    >
+      <header
+        class="bg-primary w-full md:w-3/4 flex justify-between items-center p-8"
+      >
+        <a href="/"><h1 class="text-white text-4xl font-medium">zType</h1></a>
+        <button>
+          <a
+            href="http://github.com/ziadevcom"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src="./images/github.png" alt="github logo" class="w-[50px]" />
+          </a>
+        </button>
+      </header>
+      <main class="w-full p-8 flex flex-col justify-center items-center">
+        <div class="w-full flex justify-center md:justify-end md:w-3/4">
+          <div
+            class="toolset p-3 rounded-md bg-zinc-900 mb-8 align-bottom flex justify-center"
+          >
+            <button
+              class="tool-btn active-tool-btn"
+              data-filter="time"
+              onclick="filter(event)"
+              data-time="30"
+            >
+              30s
+            </button>
+            <button
+              class="tool-btn"
+              data-filter="time"
+              onclick="filter(event)"
+              data-time="60"
+            >
+              60s
+            </button>
+            <button
+              class="tool-btn"
+              data-filter="punctuation"
+              onclick="filter(event)"
+            >
+              Punctuation
+            </button>
+            <button
+              class="tool-btn"
+              data-filter="numbers"
+              onclick="filter(event)"
+            >
+              Numbers
+            </button>
+            <button class="tool-btn" onclick="updateWords()">Reload</button>
+          </div>
+        </div>
+        <div
+          class="words-container md:w-3/4 min-h-[300px] max-h-[300px] flex flex-wrap content-start overflow-x-auto"
+        ></div>
+      </main>
+      <footer class="bg-primary w-full p-8 text-center text-white">
+        Developed By Zia 🤓
+      </footer>
+    </div>
+    <script src="./logic.js"></script>
+  </body>
+</html>
