@@ -4,9 +4,15 @@
 
 @layer components {
   .tool-btn {
-    @apply text-[#646669] hover:text-white mr-4;
+    @apply text-[#646669] hover:text-white mr-4 top-[224px] text-[15px];
   }
   .active-tool-btn {
-    @apply text-white;
+    @apply text-secondary;
+  }
+  /* .active-character {
+    @apply relative after:content-[''] after:border-b-2 after:border-secondary after:w-full after:absolute after:bottom-0 after:left-0 after:animate-pulse-faster after:rounded-lg;
+  } */
+  .cursor {
+    @apply absolute bg-secondary h-[50px] w-[2px] top-0 left-0 animate-bounce;
   }
 }

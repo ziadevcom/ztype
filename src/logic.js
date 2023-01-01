@@ -1,13 +1,4 @@
-/*
-1. timer and punctuation
-2. figure out where to get the words
-3. keep track of the curretn letter user is about to type
---- listen to keyboard type event
---- compare the user  input with the current active letter
-4. ability for the user to backspace
-5. track of the words that user typed correctly
-*/
-
+// const animationInterval = require("./timer");
 const words = [
   "the",
   "be",
@@ -211,24 +202,34 @@ const words = [
   "line",
 ];
 
-let time = 30;
-updateWords();
-// Todo
-// Toggle "active" class on the filter in UI
-// Add a timer in ui
-
 const filters = {
   punctuation: false,
   numbers: false,
+  time: 30,
 };
-function filter(event) {
+
+const state = {
+  word: null,
+  letter: null,
+  isWord: false,
+  timerRunning: false,
+  correctLettersTyped: 0,
+  allLettersTyped: 0,
+  uncorrectedErrors: 0,
+  timerFinished: false,
+  updateLetter: function () {
+    this.letter = this.word.children[0];
+  },
+};
+
+function addfilter(event) {
   // implementing
   // listen to user input and update the filters object
   let target = event.target;
   let filter = target.dataset.filter;
-
   let currentValue = filters[filter];
 
+  // Punctuation & Numbers Filter
   if (currentValue == true) {
     filters[filter] = false;
   } else {
@@ -239,6 +240,23 @@ function filter(event) {
   updateWords(filters.punctuation, filters.numbers);
 }
 
+// Handle Time Filter
+function timeFilter(event) {
+  const timeDiv = document.querySelector("#time-container");
+  let target = event.target;
+  let filter = target.dataset.filter;
+  if (filter == "time") {
+    let time = Number(target.dataset.time);
+    filters.time = time;
+    let timeFilters = document.querySelectorAll("[data-time]");
+    timeFilters.forEach((time_filter) =>
+      time_filter.classList.remove("active-tool-btn")
+    );
+  }
+  target.classList.toggle("active-tool-btn");
+  timeDiv.innerText = filters.time;
+}
+
 // Function to update the words in UI, can take a parameter of puncuation (true or false)
 function updateWords(punctuation, numbers) {
   const wordContainer = document.querySelector(".words-container");
@@ -246,16 +264,20 @@ function updateWords(punctuation, numbers) {
   for (let i = 0; i < 5; i++) {
     let sentence = makeSentence(punctuation, numbers);
     // Looping over each word in sentence
-    sentence.forEach((word) => {
+    sentence.forEach((word, index) => {
       word = String(word);
       let wordDiv = document.createElement("div");
       wordDiv.className =
-        "word word text-2xl md:text-3xl text-[#646669] mr-2 mb-2 md:mr-4 mb-4";
+        "word md:text-2xl font-light text-[#646669] mr-2 mb-2 md:mr-4 mb-4";
 
+      // Make the first word active by adding a data attribute
+      if (index === 0) {
+        wordDiv.dataset.active = "true";
+      }
       // Looping over each character in word
       for (let i = 0; i < word.length; i++) {
         let charSpan = document.createElement("span");
-        // charSpan.className = "active";
+        charSpan.classList.add("ml-[1px]", "transition-colors", "duration-500");
         charSpan.innerText = word[i];
         wordDiv.appendChild(charSpan);
       }
@@ -263,15 +285,13 @@ function updateWords(punctuation, numbers) {
     });
   }
   let activeCharacter = wordContainer.children[0].children[0];
-  activeCharacter.className =
-    "active-character relative after:content-[''] after:animation after:border-b-2 after:border-secondary after:w-full after:absolute after:bottom-0 after:left-0 after:animate-pulse-faster  after:rounded-lg";
+  // activeCharacter.className = "active-character";
+
+  // Update Global State
+  state.word = wordContainer.children[0];
+  state.letter = state.word.children[0];
+  state.isWord = true;
 }
-
-// updateWords();
-
-// console.log(wrapWithQuotations("united"));
-// console.log(capatalize("good"));
-// console.log(addSymbolAtEnd("one piece"));
 
 // Function to make a unique sentence with at option to include puncuations or numbers as well
 // punctuation and numbers paratameters can be true or false
@@ -354,4 +374,230 @@ function getRandomIntInclusive(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1) + min); // The maximum is inclusive and the minimum is inclusive
+}
+
+// Add words on first render of the UI
+updateWords();
+updateCursor();
+
+document.onkeydown = function (event) {
+  if (state.timerFinished) {
+    return;
+  }
+  if (event.key === "Backspace") {
+    backspace(event);
+  }
+  userTypes(event);
+};
+
+function userTypes(event) {
+  // TODO
+  // Our program to assume that there is only single word.
+  // Once we are done with our current word, update the current word to be next word.
+  // Error, mistypes
+
+  // Update global allt typed entries
+  state.allLettersTyped++;
+  // The number of correct words user typed.
+  if (!state.timerRunning) {
+    startCountdown();
+  }
+  const invalidKeys = [
+    "Tab",
+    "CapsLock",
+    "Shift",
+    "Control",
+    "Meta",
+    "Alt",
+    "ContextMenu",
+    "Enter",
+    "Backspace",
+  ];
+  // if ((event.keyCode < 48 || event.keyCode > 90) && event.keyCode != 32) {
+  //   return;
+  // }
+  if (invalidKeys.includes(event.key)) {
+    return;
+  }
+  const letter = state.letter;
+  const userLetter = event.key;
+
+  if (!state.isWord) {
+    if (event.keyCode == 32) {
+      state.word = state.word.nextSibling;
+      state.isWord = true;
+      state.updateLetter();
+      updateCursor();
+      state.correctLettersTyped++;
+    } else {
+      // user typed an extra character
+      state.errors += 1;
+      let extraCharacter = document.createElement("span");
+      extraCharacter.classList.add("extra", "text-red-900");
+      extraCharacter.innerText += userLetter;
+      state.word.appendChild(extraCharacter);
+      state.letter = extraCharacter;
+      updateCursor();
+    }
+    return;
+  }
+
+  if (letter.innerText == userLetter) {
+    // user typed correct letter
+    letter.classList.add("text-white", "correct");
+    if (letter.nextSibling) {
+      state.letter = letter.nextSibling;
+    }
+    state.correctLettersTyped++;
+  } else {
+    // user typed wrong letter
+    state.errors += 1;
+    letter.classList.add("text-secondary", "wrong");
+    if (state.letter.nextSibling) {
+      state.letter = letter.nextSibling;
+    }
+    updateCursor();
+  }
+  // Check if current letter is the last letter of the word
+  if (!letter.nextSibling) {
+    state.isWord = false;
+  }
+  updateCursor();
+}
+
+// Functionality of deleting a character
+function backspace(event) {
+  // const { letter, word } = state;
+
+  console.log(state);
+  // if first letter of the first word, return
+  if (!state.word.previousSibling && !state.letter.previousSibling) {
+    return;
+  }
+
+  // first character of the any word  and last character of the previous word is wrong
+  if (!state.letter.previousSibling && state.word.previousSibling) {
+    const prevWord = state.word.previousSibling;
+    const prevWordLastChar = prevWord.children[prevWord.childElementCount - 1];
+    if (
+      prevWordLastChar.classList.contains("wrong") ||
+      prevWordLastChar.classList.contains("extra")
+    ) {
+      state.letter = prevWordLastChar;
+      state.word = prevWord;
+      // Check if current letter is the last letter of the word
+      if (!state.letter.nextSibling) {
+        state.isWord = false;
+      }
+      updateCursor();
+    }
+    return;
+  }
+
+  // last character of the word
+  if (
+    state.letter.className.includes("correct") ||
+    state.letter.className.includes("wrong")
+  ) {
+    state.letter.className = "";
+    state.isWord = true;
+    updateCursor();
+    return;
+  }
+
+  // if extra character
+  if (state.letter.classList.contains("extra")) {
+    let tempLetter = state.letter;
+    state.letter = state.letter.previousSibling;
+    tempLetter.remove();
+    updateCursor();
+    return;
+  }
+
+  state.letter.previousSibling.className = "";
+  state.letter = state.letter.previousSibling;
+  updateCursor();
+}
+
+function updateCursor() {
+  // return;
+  const rect = state.letter.getBoundingClientRect();
+  let cursorDiv = document.querySelector(".cursor");
+  cursorDiv.style.top = `${rect.top}px`;
+  cursorDiv.style.left = `${rect.left}px`;
+  if (
+    state.letter.classList.contains("correct") ||
+    state.letter.classList.contains("wrong") ||
+    state.letter.classList.contains("extra")
+  ) {
+    cursorDiv.style.left = `${rect.left + rect.width}px`;
+  }
+}
+
+// Update cursor when window resizes because it was not working properly without it
+window.onresize = () => {
+  updateCursor();
+};
+
+function startCountdown() {
+  state.timerRunning = true;
+  let timeLeft = filters.time;
+  let timer = setInterval(() => {
+    const timeContainer = document.querySelector("#time-container");
+    if (timeLeft <= 0) {
+      evaluateNonCorrectedErrors();
+      timeContainer.innerText = 0;
+      state.timerRunning = false;
+      state.timerFinished = true;
+      displayUI();
+      clearInterval(timer);
+      return;
+    }
+    timeLeft = timeLeft - 1;
+    timeContainer.innerText = timeLeft;
+  }, 1000);
+}
+
+function displayUI() {
+  document.querySelector(".cursor").classList.add("hidden");
+  document.querySelector(".words-container").classList.add("hidden");
+  document.querySelector("#time-container").classList.add("hidden");
+  document.querySelector(".results-container").classList.remove("hidden");
+  let wpm = calculateWPM();
+  let accuracy = calculateAccuracy();
+  let results = `<h3 class="text-secondary text-2xl mr-6">WPM: ${wpm}</h3>
+  <h3 class="text-secondary text-2xl mr-6">Accuracy: ${accuracy}%</h3>`;
+  document.querySelector("#results").innerHTML = results;
+}
+
+function calculateWPM() {
+  const time = filters.time / 60;
+  const uncorrected = state.uncorrectedErrors;
+  let gpm = (state.allLettersTyped / 5) / time // prettier-ignore
+  let netWPM = gpm - (uncorrected / time); // prettier-ignore
+  return Math.floor(netWPM);
+}
+
+function calculateAccuracy() {
+  let accuracy = (state.correctLettersTyped / state.allLettersTyped) * 100;
+  return Math.floor(accuracy);
+}
+
+// Function to check all the non corrector errors after the test time finishes
+function evaluateNonCorrectedErrors() {
+  let words = document.querySelectorAll(".word");
+
+  words.forEach((word) => {
+    let characters = word.children;
+    console.log(characters);
+    for (let letter of characters) {
+      if (
+        letter.classList.contains("wrong") ||
+        letter.classList.contains("extra")
+      ) {
+        state.uncorrectedErrors++;
+        return;
+      }
+    }
+  });
 }

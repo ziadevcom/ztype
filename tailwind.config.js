@@ -2,16 +2,20 @@
 const { colors: defaultColors } = require("tailwindcss/defaultTheme");
 
 module.exports = {
-  content: ["src/*.{html,js}"],
+  content: ["src/*.{html,js}", "./src/logic.js"],
   theme: {
     extend: {
-      colors: { primary: "#323437", secondary: "#fda4af", white: "#ffffff" },
+      colors: {
+        primary: "#323437",
+        /* secondary: "#fda4af" */ secondary: "#E2B714",
+        white: "#ffffff",
+      },
     },
-    animation: {
-      "pulse-faster": "pulse 0.5s linear infinite",
-    },
+    // animation: {
+    //   "pulse-faster": "pulse 0.5s linear infinite",
+    // },
     fontFamily: {
-      josef: ["Josefin Sans", "sans-serif"],
+      primary: ["Roboto Mono", "sans-serif"],
     },
   },
   plugins: [],
