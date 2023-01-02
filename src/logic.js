@@ -1,4 +1,3 @@
-// const animationInterval = require("./timer");
 const words = [
   "the",
   "be",
@@ -202,7 +201,7 @@ const words = [
   "line",
 ];
 
-const filters = {
+let filters = {
   punctuation: false,
   numbers: false,
   time: 30,
@@ -236,8 +235,11 @@ function addfilter(event) {
     filters[filter] = true;
   }
 
+  localStorage.setItem("filters", JSON.stringify(filters));
+
   target.classList.toggle("active-tool-btn");
   updateWords(filters.punctuation, filters.numbers);
+  focusWordsDiv();
 }
 
 // Handle Time Filter
@@ -255,6 +257,8 @@ function timeFilter(event) {
   }
   target.classList.toggle("active-tool-btn");
   timeDiv.innerText = filters.time;
+  localStorage.setItem("filters", JSON.stringify(filters));
+  focusWordsDiv();
 }
 
 // Function to update the words in UI, can take a parameter of puncuation (true or false)
@@ -268,7 +272,7 @@ function updateWords(punctuation, numbers) {
       word = String(word);
       let wordDiv = document.createElement("div");
       wordDiv.className =
-        "word md:text-2xl font-light text-[#646669] mr-2 mb-2 md:mr-4 mb-4";
+        "word font-normal md:text-2xl text-[#646669] mr-2 mb-2 md:mr-3 mb-3";
 
       // Make the first word active by adding a data attribute
       if (index === 0) {
@@ -277,7 +281,11 @@ function updateWords(punctuation, numbers) {
       // Looping over each character in word
       for (let i = 0; i < word.length; i++) {
         let charSpan = document.createElement("span");
-        charSpan.classList.add("ml-[1px]", "transition-colors", "duration-500");
+        charSpan.classList.add(
+          "transition-colors",
+          "duration-200",
+          "text-[24px]"
+        );
         charSpan.innerText = word[i];
         wordDiv.appendChild(charSpan);
       }
@@ -376,17 +384,32 @@ function getRandomIntInclusive(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min); // The maximum is inclusive and the minimum is inclusive
 }
 
-// Add words on first render of the UI
-updateWords();
-updateCursor();
-
+// When words div is in focus, listen to the keydown events
 document.onkeydown = function (event) {
+  // because events capture and bubble, we dont want this function to execute if clicked on any relevant buttons such as filters or restart buttons
+  if (
+    event.target.classList.contains("tool-btn") ||
+    event.target.classList.contains("restartTest")
+  ) {
+    return;
+  }
+
   if (state.timerFinished) {
     return;
   }
+
   if (event.key === "Backspace") {
     backspace(event);
   }
+
+  if (!isValidTypingKey(event)) {
+    return;
+  }
+
+  focusWordsDiv();
+};
+
+document.querySelector(".words-container").onkeydown = (event) => {
   userTypes(event);
 };
 
@@ -396,29 +419,17 @@ function userTypes(event) {
   // Once we are done with our current word, update the current word to be next word.
   // Error, mistypes
 
+  if (!isValidTypingKey(event)) {
+    return;
+  }
+
   // Update global allt typed entries
   state.allLettersTyped++;
   // The number of correct words user typed.
   if (!state.timerRunning) {
     startCountdown();
   }
-  const invalidKeys = [
-    "Tab",
-    "CapsLock",
-    "Shift",
-    "Control",
-    "Meta",
-    "Alt",
-    "ContextMenu",
-    "Enter",
-    "Backspace",
-  ];
-  // if ((event.keyCode < 48 || event.keyCode > 90) && event.keyCode != 32) {
-  //   return;
-  // }
-  if (invalidKeys.includes(event.key)) {
-    return;
-  }
+
   const letter = state.letter;
   const userLetter = event.key;
 
@@ -444,7 +455,7 @@ function userTypes(event) {
 
   if (letter.innerText == userLetter) {
     // user typed correct letter
-    letter.classList.add("text-white", "correct");
+    letter.classList.add("correct");
     if (letter.nextSibling) {
       state.letter = letter.nextSibling;
     }
@@ -452,7 +463,7 @@ function userTypes(event) {
   } else {
     // user typed wrong letter
     state.errors += 1;
-    letter.classList.add("text-secondary", "wrong");
+    letter.classList.add("wrong");
     if (state.letter.nextSibling) {
       state.letter = letter.nextSibling;
     }
@@ -534,22 +545,23 @@ function updateCursor() {
   }
 }
 
-// Update cursor when window resizes because it was not working properly without it
-window.onresize = () => {
-  updateCursor();
-};
-
 function startCountdown() {
   state.timerRunning = true;
   let timeLeft = filters.time;
   let timer = setInterval(() => {
     const timeContainer = document.querySelector("#time-container");
+    if (state.timerFinished === true) {
+      displayUI(false);
+      clearInterval(timer);
+      state.timerFinished = false;
+      return;
+    }
     if (timeLeft <= 0) {
       evaluateNonCorrectedErrors();
       timeContainer.innerText = 0;
       state.timerRunning = false;
       state.timerFinished = true;
-      displayUI();
+      displayUI(true);
       clearInterval(timer);
       return;
     }
@@ -558,7 +570,13 @@ function startCountdown() {
   }, 1000);
 }
 
-function displayUI() {
+function displayUI(showResults) {
+  if (!showResults) {
+    document.querySelector("#time-container").innerHTML = filters.time;
+    updateWords(filters.punctuation, filters.numbers);
+    updateCursor();
+    return;
+  }
   document.querySelector(".cursor").classList.add("hidden");
   document.querySelector(".words-container").classList.add("hidden");
   document.querySelector("#time-container").classList.add("hidden");
@@ -601,3 +619,105 @@ function evaluateNonCorrectedErrors() {
     }
   });
 }
+
+function handleFiltersPersists() {
+  if (localStorage.getItem("filters")) {
+    // If filters exist already, update program filters to be the one as localstorage
+    filters = JSON.parse(localStorage.getItem("filters"));
+  } else {
+    // If no filters in localstorage, then add program's current filters to localstorage
+    localStorage.setItem("filters", JSON.stringify(filters));
+  }
+
+  // Selecting all filters componenets from UI
+  const timeFilters = document.querySelectorAll("[data-filter='time']");
+  const punctuationFilter = document.querySelector(
+    "[data-filter='punctuation']"
+  );
+  const numbersFilter = document.querySelector("[data-filter='numbers']");
+
+  //  Updating the timer filters in UI according to the filters stored in localstorage
+  timeFilters.forEach((filter) => {
+    const value = filter.dataset.time;
+    if (filters.time == value) {
+      filter.classList.add("active-tool-btn");
+    } else {
+      filter.classList.remove("active-tool-btn");
+    }
+  });
+
+  //  Updating the punctuation filter in UI according to the filters stored in localstorage
+  if (filters.punctuation === true) {
+    punctuationFilter.classList.add("active-tool-btn");
+  } else {
+    punctuationFilter.classList.remove("active-tool-btn");
+  }
+
+  //  Updating the numbers filter in UI according to the filters stored in localstorage
+  if (filters.numbers === true) {
+    numbersFilter.classList.add("active-tool-btn");
+  } else {
+    numbersFilter.classList.remove("active-tool-btn");
+  }
+}
+
+// Resets the filter to the initial state (time = 30s, everything else false)
+function resetFilters() {
+  let resetFilters = {
+    time: 30,
+    punctuation: false,
+    numbers: false,
+  };
+
+  localStorage.setItem("filters", JSON.stringify(resetFilters));
+  handleFiltersPersists();
+  updateWords(false, filters.numbers);
+}
+
+// Remove the focus from whatever element is currently focused and focus on the words div.
+function focusWordsDiv() {
+  document.activeElement.blur();
+  const wordDiv = document.querySelector(".words-container");
+  wordDiv.focus();
+}
+
+// Restart the test when clicked on restart button in UI
+function restartTest() {
+  state.timerFinished = true;
+  focusWordsDiv();
+}
+
+// Function to check if user pressed a valid key to type, i.e avoid keys like ctrl, shift etc
+function isValidTypingKey(event) {
+  const invalidKeys = [
+    "Tab",
+    "CapsLock",
+    "Shift",
+    "Control",
+    "Meta",
+    "Alt",
+    "ContextMenu",
+    "Enter",
+    "Backspace",
+  ];
+  // if ((event.keyCode < 48 || event.keyCode > 90) && event.keyCode != 32) {
+  //   return;
+  // }
+  if (invalidKeys.includes(event.key)) {
+    return false;
+  }
+  return true;
+}
+// Render the UI on first page load
+document.addEventListener("DOMContentLoaded", () => {
+  handleFiltersPersists();
+  const { punctuation, numbers } = filters;
+  updateWords(punctuation, numbers);
+  updateCursor();
+  focusWordsDiv();
+});
+
+// Update cursor when window resizes because it was not working properly without it
+window.onresize = () => {
+  updateCursor();
+};

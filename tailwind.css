@@ -2,17 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --color-primary: 50 52 55;
+    --color-secondary: 226 183 20;
+    --color-bright: 255 255 255;
+    --color-dark: 00 00 00;
+    --color-error: 255 00 00;
+  }
+}
 @layer components {
   .tool-btn {
-    @apply text-[#646669] hover:text-white mr-4 top-[224px] text-[15px];
+    @apply text-bright/30 hover:text-bright mr-4 top-[224px] text-[15px];
   }
   .active-tool-btn {
     @apply text-secondary;
+  }
+  .wrong {
+    @apply !text-error;
+  }
+  .correct {
+    @apply text-bright;
   }
   /* .active-character {
     @apply relative after:content-[''] after:border-b-2 after:border-secondary after:w-full after:absolute after:bottom-0 after:left-0 after:animate-pulse-faster after:rounded-lg;
   } */
   .cursor {
-    @apply absolute bg-secondary h-[50px] w-[2px] top-0 left-0 animate-bounce;
+    @apply absolute bg-secondary h-[34px] w-[2px] top-0 left-0 animate-blink;
   }
 }
