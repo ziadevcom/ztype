@@ -478,9 +478,6 @@ function userTypes(event) {
 
 // Functionality of deleting a character
 function backspace(event) {
-  // const { letter, word } = state;
-
-  console.log(state);
   // if first letter of the first word, return
   if (!state.word.previousSibling && !state.letter.previousSibling) {
     return;
@@ -659,6 +656,7 @@ function handleFiltersPersists() {
   } else {
     numbersFilter.classList.remove("active-tool-btn");
   }
+  document.querySelector("#time-container").innerText = filters.time;
 }
 
 // Resets the filter to the initial state (time = 30s, everything else false)
