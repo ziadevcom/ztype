@@ -1,8 +1,7 @@
 /** @type {import('tailwindcss').Config} */
-const { colors: defaultColors } = require("tailwindcss/defaultTheme");
 
 module.exports = {
-  content: ["/src/index.html", "./src/logic.js"],
+  content: ["./src/index.html", "./src/logic.js"],
   theme: {
     extend: {
       colors: {
@@ -33,5 +32,5 @@ module.exports = {
       primary: ["Roboto Mono", "sans-serif"],
     },
   },
-  plugins: [],
+  plugins: [require("tailwind-scrollbar-hide")],
 };

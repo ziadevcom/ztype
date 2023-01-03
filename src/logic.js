@@ -221,6 +221,9 @@ const state = {
   },
 };
 
+// Selecting most used / important dom elements
+const wordsContainer = document.querySelector(".words-container");
+
 function addfilter(event) {
   // implementing
   // listen to user input and update the filters object
@@ -263,16 +266,16 @@ function timeFilter(event) {
 
 // Function to update the words in UI, can take a parameter of puncuation (true or false)
 function updateWords(punctuation, numbers) {
-  const wordContainer = document.querySelector(".words-container");
-  wordContainer.innerHTML = ""; // Deleting previous words from ui
-  for (let i = 0; i < 5; i++) {
+  const noSentences = 15;
+  wordsContainer.innerHTML = ""; // Deleting previous words from ui
+  for (let i = 0; i < noSentences; i++) {
     let sentence = makeSentence(punctuation, numbers);
     // Looping over each word in sentence
     sentence.forEach((word, index) => {
       word = String(word);
       let wordDiv = document.createElement("div");
       wordDiv.className =
-        "word font-normal md:text-2xl text-[#646669] mr-2 mb-2 md:mr-3 mb-3";
+        "word font-normal md:text-2xl text-[#646669] mr-2 mb-2 md:mr-3 mb-3 select-none	";
 
       // Make the first word active by adding a data attribute
       if (index === 0) {
@@ -289,14 +292,14 @@ function updateWords(punctuation, numbers) {
         charSpan.innerText = word[i];
         wordDiv.appendChild(charSpan);
       }
-      wordContainer.appendChild(wordDiv);
+      wordsContainer.appendChild(wordDiv);
     });
   }
-  let activeCharacter = wordContainer.children[0].children[0];
+  let activeCharacter = wordsContainer.children[0].children[0];
   // activeCharacter.className = "active-character";
 
   // Update Global State
-  state.word = wordContainer.children[0];
+  state.word = wordsContainer.children[0];
   state.letter = state.word.children[0];
   state.isWord = true;
 }
@@ -409,10 +412,6 @@ document.onkeydown = function (event) {
   focusWordsDiv();
 };
 
-document.querySelector(".words-container").onkeydown = (event) => {
-  userTypes(event);
-};
-
 function userTypes(event) {
   // TODO
   // Our program to assume that there is only single word.
@@ -435,6 +434,7 @@ function userTypes(event) {
 
   if (!state.isWord) {
     if (event.keyCode == 32) {
+      event.preventDefault();
       state.word = state.word.nextSibling;
       state.isWord = true;
       state.updateLetter();
@@ -528,17 +528,34 @@ function backspace(event) {
 }
 
 function updateCursor() {
-  // return;
-  const rect = state.letter.getBoundingClientRect();
+  // state.word.scrollIntoView();
+  let letterRect = state.letter.getBoundingClientRect();
+  // console.log(letterRect);
+
+  // Subtracting Distance of viewport to the top of the wordsContainer from top of the viewport to the top of cursor gives us the position of the cursor relative to the wordsContainer Div
+  const wordsContainerRect = wordsContainer.getBoundingClientRect();
+  let cursorPositionRelativeToWordsContainer =
+    letterRect.top - wordsContainerRect.top;
+  console.log(cursorPositionRelativeToWordsContainer);
+  // If current words is in the middle of the wordsContainer div then scroll into view
+  // i.e scroll the current word into view if the user is typing at least on the middle line of the text
+  if (cursorPositionRelativeToWordsContainer >= wordsContainerRect.height / 2) {
+    wordsContainer.scroll({
+      top: wordsContainer.scrollTop + wordsContainerRect.height / 3,
+      behavior: "smooth",
+    });
+  }
+
+  console.log("letterRect", letterRect);
   let cursorDiv = document.querySelector(".cursor");
-  cursorDiv.style.top = `${rect.top}px`;
-  cursorDiv.style.left = `${rect.left}px`;
+  cursorDiv.style.top = `${letterRect.top}px`;
+  cursorDiv.style.left = `${letterRect.left}px`;
   if (
     state.letter.classList.contains("correct") ||
     state.letter.classList.contains("wrong") ||
     state.letter.classList.contains("extra")
   ) {
-    cursorDiv.style.left = `${rect.left + rect.width}px`;
+    cursorDiv.style.left = `${letterRect.left + letterRect.width}px`;
   }
 }
 
@@ -575,7 +592,7 @@ function displayUI(showResults) {
     return;
   }
   document.querySelector(".cursor").classList.add("hidden");
-  document.querySelector(".words-container").classList.add("hidden");
+  wordsContainer.classList.add("hidden");
   document.querySelector("#time-container").classList.add("hidden");
   document.querySelector(".results-container").classList.remove("hidden");
   let wpm = calculateWPM();
@@ -604,7 +621,6 @@ function evaluateNonCorrectedErrors() {
 
   words.forEach((word) => {
     let characters = word.children;
-    console.log(characters);
     for (let letter of characters) {
       if (
         letter.classList.contains("wrong") ||
@@ -675,7 +691,7 @@ function resetFilters() {
 // Remove the focus from whatever element is currently focused and focus on the words div.
 function focusWordsDiv() {
   document.activeElement.blur();
-  const wordDiv = document.querySelector(".words-container");
+  const wordDiv = wordsContainer;
   wordDiv.focus();
 }
 
@@ -698,9 +714,7 @@ function isValidTypingKey(event) {
     "Enter",
     "Backspace",
   ];
-  // if ((event.keyCode < 48 || event.keyCode > 90) && event.keyCode != 32) {
-  //   return;
-  // }
+
   if (invalidKeys.includes(event.key)) {
     return false;
   }
@@ -719,3 +733,25 @@ document.addEventListener("DOMContentLoaded", () => {
 window.onresize = () => {
   updateCursor();
 };
+
+// Disable scrolling on wordsContainer with mouse
+wordsContainer.onwheel = (event) => {
+  event.preventDefault();
+};
+
+// Handle user typing event
+wordsContainer.onkeydown = (event) => {
+  // Disable scrolling on wordsContainer with space key
+  if (event.code == "Space") {
+    event.preventDefault();
+  }
+  userTypes(event);
+};
+
+// Add a limited number of words in wordsContainer
+// Keep track of number of words
+// When user is on last word
+// -- When they finish typing the last word and hit space
+// ---- evaluateNonCorrectedErrors() & update state
+// ---- Delete all the words currently in the wordsContainer
+// ---- Add new words

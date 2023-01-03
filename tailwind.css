@@ -24,10 +24,9 @@
   .correct {
     @apply text-bright;
   }
-  /* .active-character {
-    @apply relative after:content-[''] after:border-b-2 after:border-secondary after:w-full after:absolute after:bottom-0 after:left-0 after:animate-pulse-faster after:rounded-lg;
-  } */
   .cursor {
     @apply absolute bg-secondary h-[34px] w-[2px] top-0 left-0 animate-blink;
   }
+
+  /* Hide Scrollbar .hide-scrollbar { */
 }

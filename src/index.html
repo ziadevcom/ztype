@@ -22,7 +22,7 @@
     <div
       class="bg-primary w-screen h-screen place-items-center grid grid-rows-[auto_1fr_auto]"
     >
-      <header class="w-full md:w-4/6 flex justify-between items-center p-8">
+      <header class="w-full md:w-4/6 flex justify-between items-center pt-4">
         <a href="/" class="flex items-center">
           <svg
             class="w-[50px] mr-3 fill-secondary"
@@ -69,7 +69,7 @@
           </a>
         </button>
       </header>
-      <main class="w-full p-8 flex flex-col justify-center items-center">
+      <main class="w-full flex flex-col justify-center items-center">
         <div
           class="w-full flex flex-col justify-center md:justify-between md:flex-row md:w-4/6"
         >
@@ -91,7 +91,7 @@
               class="tool-btn"
               data-filter="time"
               onclick="timeFilter(event)"
-              data-time="60"
+              data-time="999990"
             >
               60s
             </button>
@@ -112,11 +112,12 @@
             <button class="tool-btn" onclick="resetFilters()">Reset</button>
           </div>
         </div>
-        <div class="cursor"></div>
         <div
-          class="words-container md:md:w-4/6 min-h-[0px] max-h-[300px] mb-12 flex flex-wrap content-start overflow-x-auto focus:outline-none"
+          class="words-container md:md:w-4/6 min-h-[0px] max-h-[120px] mb-12 flex flex-wrap content-start overflow-x-auto focus:outline-none scrollbar-hide relative scroll-mt-10;"
           tabindex="0"
+          style="scroll-margin-top: 20px"
         ></div>
+        <div class="cursor"></div>
         <div
           class="results-container hidden md:w-4/6 min-h-[300px] max-h-[300px] flex flex-col justify-center"
         >
@@ -147,7 +148,7 @@
           </svg>
         </button>
       </main>
-      <footer class="font-light text-[16px] w-full p-8 text-center text-white">
+      <footer class="font-light text-[16px] w-full pb-8 text-center text-white">
         Developed By Zia
       </footer>
     </div>
