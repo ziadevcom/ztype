@@ -522,15 +522,20 @@ video {
 }
 
 .tool-btn {
-  top: 224px;
-  margin-right: 1rem;
-  font-size: 15px;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
   color: rgb(var(--color-bright) / 0.3);
 }
 
 .tool-btn:hover {
   --tw-text-opacity: 1;
   color: rgb(var(--color-bright) / var(--tw-text-opacity));
+}
+
+@media (min-width: 768px) {
+  .tool-btn {
+    font-size: 15px;
+  }
 }
 
 .active-tool-btn {
@@ -708,6 +713,10 @@ video {
   justify-content: space-between;
 }
 
+.gap-2 {
+  gap: 0.5rem;
+}
+
 .overflow-x-auto {
   overflow-x: auto;
 }
@@ -737,8 +746,8 @@ video {
   fill: rgb(var(--color-bright) / 1);
 }
 
-.p-3 {
-  padding: 0.75rem;
+.p-4 {
+  padding: 1rem;
 }
 
 .py-3 {
@@ -753,10 +762,6 @@ video {
 
 .pt-4 {
   padding-top: 1rem;
-}
-
-.pb-8 {
-  padding-bottom: 2rem;
 }
 
 .text-center {
@@ -776,8 +781,9 @@ video {
   line-height: 2.25rem;
 }
 
-.text-\[16px\] {
-  font-size: 16px;
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 .text-\[24px\] {
@@ -787,6 +793,16 @@ video {
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
 }
 
 .font-normal {
@@ -893,8 +909,39 @@ video {
     justify-content: space-between;
   }
 
+  .md\:gap-4 {
+    gap: 1rem;
+  }
+
+  .md\:p-0 {
+    padding: 0px;
+  }
+
+  .md\:px-6 {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .md\:py-4 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .md\:pb-8 {
+    padding-bottom: 2rem;
+  }
+
+  .md\:text-base {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+
   .md\:text-2xl {
     font-size: 1.5rem;
     line-height: 2rem;
+  }
+
+  .md\:text-\[24px\] {
+    font-size: 24px;
   }
 }

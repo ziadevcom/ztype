@@ -20,7 +20,7 @@
   </head>
   <body class="font-primary">
     <div
-      class="bg-primary w-screen h-screen place-items-center grid grid-rows-[auto_1fr_auto]"
+      class="bg-primary p-4 md:p-0 w-screen h-screen place-items-center grid grid-rows-[auto_1fr_auto]"
     >
       <header class="w-full md:w-4/6 flex justify-between items-center pt-4">
         <a href="/" class="flex items-center">
@@ -77,13 +77,13 @@
             30
           </p>
           <div
-            class="toolset p-3 rounded-md bg-dark/60 mb-8 align-bottom flex justify-center"
+            class="toolset flex-wrap gap-2 md:gap-4 p-4 md:px-6 md:py-4 rounded-md bg-dark/60 mb-8 align-bottom flex justify-center text-center"
           >
             <button
               class="tool-btn"
               data-filter="time"
               onclick="timeFilter(event)"
-              data-time="30"
+              data-time="9999"
             >
               30s
             </button>
@@ -112,6 +112,7 @@
             <button class="tool-btn" onclick="resetFilters()">Reset</button>
           </div>
         </div>
+        <input id="mobileInput" class="hidden" />
         <div
           class="words-container md:md:w-4/6 min-h-[0px] max-h-[120px] mb-12 flex flex-wrap content-start overflow-x-auto focus:outline-none scrollbar-hide relative scroll-mt-10;"
           tabindex="0"
@@ -148,7 +149,9 @@
           </svg>
         </button>
       </main>
-      <footer class="font-light text-[16px] w-full pb-8 text-center text-white">
+      <footer
+        class="font-light text-sm md:text-base w-full md:pb-8 text-center text-white"
+      >
         Developed By Zia
       </footer>
     </div>

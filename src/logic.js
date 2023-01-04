@@ -287,7 +287,8 @@ function updateWords(punctuation, numbers) {
         charSpan.classList.add(
           "transition-colors",
           "duration-200",
-          "text-[24px]"
+          "text-xl",
+          "md:text-[24px]"
         );
         charSpan.innerText = word[i];
         wordDiv.appendChild(charSpan);
@@ -528,9 +529,9 @@ function backspace(event) {
 }
 
 function updateCursor() {
-  // state.word.scrollIntoView();
   let letterRect = state.letter.getBoundingClientRect();
-  // console.log(letterRect);
+  console.log("Before Scrolling", letterRect);
+  console.log(state.letter);
 
   // Subtracting Distance of viewport to the top of the wordsContainer from top of the viewport to the top of cursor gives us the position of the cursor relative to the wordsContainer Div
   const wordsContainerRect = wordsContainer.getBoundingClientRect();
@@ -544,6 +545,9 @@ function updateCursor() {
       top: wordsContainer.scrollTop + wordsContainerRect.height / 3,
       behavior: "smooth",
     });
+    console.log("After Scrolling", state.letter.getBoundingClientRect());
+    console.log(state.letter);
+    return;
   }
 
   console.log("letterRect", letterRect);
@@ -691,8 +695,7 @@ function resetFilters() {
 // Remove the focus from whatever element is currently focused and focus on the words div.
 function focusWordsDiv() {
   document.activeElement.blur();
-  const wordDiv = wordsContainer;
-  wordDiv.focus();
+  wordsContainer.focus();
 }
 
 // Restart the test when clicked on restart button in UI
@@ -748,10 +751,20 @@ wordsContainer.onkeydown = (event) => {
   userTypes(event);
 };
 
-// Add a limited number of words in wordsContainer
-// Keep track of number of words
-// When user is on last word
-// -- When they finish typing the last word and hit space
-// ---- evaluateNonCorrectedErrors() & update state
-// ---- Delete all the words currently in the wordsContainer
-// ---- Add new words
+// Handle user typing for touchscreens
+wordsContainer.touchstart = () => {
+  document.getElementById("mobileInput").focus();
+};
+
+// Listen to the scroll event
+// update the letter Rect accordingly
+wordsContainer.onscroll = () => {
+  let timer = null;
+  if (timer !== null) {
+    clearTimeout(timer);
+  }
+  timer = setTimeout(function () {
+    // update the letter Rect accordingly
+    updateCursor();
+  }, 200);
+};
