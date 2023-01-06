@@ -13,7 +13,7 @@
 }
 @layer components {
   .tool-btn {
-    @apply text-bright/30 hover:text-bright mr-4 top-[224px] text-[15px];
+    @apply text-bright/30 hover:text-bright text-sm md:text-[15px];
   }
   .active-tool-btn {
     @apply text-secondary;
@@ -24,6 +24,7 @@
   .correct {
     @apply text-bright;
   }
+
   .cursor {
     @apply absolute bg-secondary h-[34px] w-[2px] top-0 left-0 animate-blink;
   }

@@ -44,30 +44,44 @@
           </svg>
           <h1 class="text-bright text-3xl font-normal">zType</h1></a
         >
-        <button>
-          <a
-            href="http://github.com/ziadevcom"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <svg
-              class="w-[50px]"
-              viewBox="0 0 16 16"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
+        <div class="flex items-center gap-5">
+          <button>
+            <a
+              href="http://github.com/ziadevcom"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-              <g id="SVGRepo_iconCarrier">
-                <path
-                  class="fill-bright"
-                  fill-rule="evenodd"
-                  d="M8 1C4.133 1 1 4.13 1 7.993c0 3.09 2.006 5.71 4.787 6.635.35.064.478-.152.478-.337 0-.166-.006-.606-.01-1.19-1.947.423-2.357-.937-2.357-.937-.319-.808-.778-1.023-.778-1.023-.635-.434.048-.425.048-.425.703.05 1.073.72 1.073.72.624 1.07 1.638.76 2.037.582.063-.452.244-.76.444-.935-1.554-.176-3.188-.776-3.188-3.456 0-.763.273-1.388.72-1.876-.072-.177-.312-.888.07-1.85 0 0 .586-.189 1.924.716A6.711 6.711 0 018 4.381c.595.003 1.194.08 1.753.236 1.336-.905 1.923-.717 1.923-.717.382.963.142 1.674.07 1.85.448.49.72 1.114.72 1.877 0 2.686-1.638 3.278-3.197 3.45.251.216.475.643.475 1.296 0 .934-.009 1.688-.009 1.918 0 .187.127.404.482.336A6.996 6.996 0 0015 7.993 6.997 6.997 0 008 1z"
-                  clip-rule="evenodd"
-                ></path>
-              </g>
-            </svg>
-          </a>
-        </button>
+              <svg
+                class="w-12"
+                viewBox="0 0 16 16"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    class="fill-bright"
+                    fill-rule="evenodd"
+                    d="M8 1C4.133 1 1 4.13 1 7.993c0 3.09 2.006 5.71 4.787 6.635.35.064.478-.152.478-.337 0-.166-.006-.606-.01-1.19-1.947.423-2.357-.937-2.357-.937-.319-.808-.778-1.023-.778-1.023-.635-.434.048-.425.048-.425.703.05 1.073.72 1.073.72.624 1.07 1.638.76 2.037.582.063-.452.244-.76.444-.935-1.554-.176-3.188-.776-3.188-3.456 0-.763.273-1.388.72-1.876-.072-.177-.312-.888.07-1.85 0 0 .586-.189 1.924.716A6.711 6.711 0 018 4.381c.595.003 1.194.08 1.753.236 1.336-.905 1.923-.717 1.923-.717.382.963.142 1.674.07 1.85.448.49.72 1.114.72 1.877 0 2.686-1.638 3.278-3.197 3.45.251.216.475.643.475 1.296 0 .934-.009 1.688-.009 1.918 0 .187.127.404.482.336A6.996 6.996 0 0015 7.993 6.997 6.997 0 008 1z"
+                    clip-rule="evenodd"
+                  ></path>
+                </g>
+              </svg>
+            </a>
+          </button>
+          <label
+            name="colorChanger"
+            class="w-[44px] h-[44px] relative after:content-[''] after:absolute after:top-0 after:left-0 after:w-full after:h-full after:bg-[url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADoAAAA6CAYAAADhu0ooAAAACXBIWXMAAAsTAAALEwEAmpwYAAAIe0lEQVR4nM3abVBT2RkH8Dt9mWlnOt2t0xnbnenX/dIvnemnfujO1HZ3O7ud7XZbWqedaber62rB1XFZK28Ka6tr5VWFFdFVREGBIAaQ9wABeTFBXAV1XRcElEASSEJy703uOff+OzdKTCQh5yZBfWb+n+HHec5zzknguFWohdLSFzz7i3eLmZ+apB3ZLpqSTuWUXYqSnAakpAMdGVA60iG3pyu0I4OSzhynaMy/yg8cy1kwl77APc+Fwsq1wp7cerI9S8DWNGBreuR0ZkRORwZIR7bI9xY1zI1W/4h7Xsp1sPRN30c5dqREwbFCQ9DpkAx7ba6h8t89M+Biyee/9P37PxZ/K7ICtUIDSYfU8YnD3Vv26lMDIinpm+LuA4OaVjBu6GOwt/vgF0Dpt1cV6dhfso5sz/LGDIwb+jC0I0vyDJS9sSpIz96iQiTvig+YIOjS/vVcLjmUUKSQnV8X015cTeij8MaitoQgxYwD5oQBVwGqRuw+aIoLye/Oa0w4chWg/pXtO3wpJqR7/5EDUQ/+aFH39IYdUP6eAuUvH0BJ2gTlTxsB3WagbgtQnww0bAdaUoGOtDj3bAY8lz8r0IRcOFD6VlzHx8YdUNZvhvL2u1B+vzyo3rg8NRuB+hSg5eP4BtQA4zRWz0nyYaYUMzDp/bC4qNDgqKsdI5h2ZElM56z/MqAVmJIG5W/JUYHM0KVcTPGvklasYMwfWhHp7jC9Km/LUjQhN++E8s4GZqQmqBrdB0D7Lk1QuTdbcTsqfh0R6mvqs6HeADnvOBtyUyqUP7ynCakZqqZ2E9C2MzqyKxP0q4OArQA+W7E9LNLRY16Hi10IRNcOmp338P0YdiU/jgkZEzSAjbCyhgzI1/YBtnzAXhCIy3Vh+WCSmvqsIdBHUU7rIafmLDs2lD9qa9e4oUtt/MSeVYZyoMzmhQDxKD5rsTV00l7/ei3qlyNDwEcroTyCKn/9V8zIuKD+AfXhQ6QxE/K93LBABJIPq7X5xwGop33o4krIx+3cCZJ7HHT9lmcGlXXJIGP/iwIsCMRjP1kfgJIGI88EVVPVCnL6EvicQihv/5MJJmzNcDtyj1XMl5x73VldvcYxcuFF22D1OufAiTKx+ZN5NuT74PtyIU1nA7NpzFDJViQwt23wiuJMSyDeU/UQt++JCCTrNysLRadyVzzT1EE4eCpVqt8mR0J62/bAe3c/YPnocayfMmLz4ZwqW8Pxnab/sq9mWwjUn4pmCMVVkN7dHoL0btghqSsYDRnAjlT/TLy02xMMJPod4EeLAEtqKFLNXBbzqrpsZ3I4sbXfzIRUV/1JZFDkMy3w5J+AnLQJ9M+bFFtJ5VucxrKMNf/Up99JFd0WeEyFkO+nLQcGkgrYw09bPBHBVjbMSY29DiZobWjbRgo53QT7ydoyLsay3dClksmcFYBBse1j3KeHHRzV91AmaHU7E1SqMZCJiYnvcHEUP1voZoLO5TBBZXsB4eR6gxLz/gwTp2EktgdwUDlsVeVs0Aw2qDVP4RTWiVvZygS1DtxYHy90fq7hdSbobDoTVLHlgWOeuIxQW9+tl+KFOp2NP2CD7mI+YrhEQx+Yb//w+YTWs9+ImFZ08Nav4oXa7frX2PaohtaVWYfRObZhtNBzvTRe6IKt8nM2aCb7MKL67oQeL0JTf/gHr4YS5vIcCT9eSEOvK5Z7bsRztK4H96YX3owVecPVts03t5fxwrCf7cJgP7zAiS2Dw8xXwLMrXAHPtcNmvoNbLh/G3OTBqAeav8S9BuPL3d7jpMd3BJPOcsiW9ChXwHzGK+AJM8cbTPuYJ+/58PvUZRjBV1Y3bnro47jp0E0PHj96o9Qw3/tzo6/CY5CKsJQBXyls88fCX+pn2fYn/G/Syj0c3zf8EvPkrQttX6GpHxNT86HAECyxjLnJb6IhB7ydmd3eUjkYGZxr/HHw1twn2pb9meZwnHzR/4OIvkfU9PCu7cLM6KQKiYwMypiHdo156Hs3XXh5CvjuKPrXmDx9bwyIreVG71lXJGBoCnFnsRySOoC0PLzth/jAX5RvHWxhQSr6HjhvjOO208sEjBQ2WPgYfUdgXSxjb1tbeV0AOt9z5SfR2pcfGoWF92HWSzHO02cG7acncA06jNIq8I7ilaG2fLhnL64N2SeR3qWS4QpmHbwfuBSLSHE7DmysyG5SghHU+qFL+dpbAWovDAv12Yvnlg2Exe7hd4KBcnMf7JNzsAQBgzPjpbj9FKFd0mFcVc6HIJcyAh3u8yeh2Bk+wPYPpcZeJxq6sTg6jlmRhAUG5766sk8B2i0dxrByLiwyONfl83A4jz76SuKILeKYF3qvJ824vEo04LKV1djGWpA9pDjiSkbKTd9ZxWGrivwlk1pTgqzXAvXvWXVACYmHXqbHl+1JlphJYz8XrQB8675IFrVi1UyLFHcSADWSozAplZqB11QkrZEAsP3D1aSI12ZEoqmFnwTfXWGFww+bQ+ijZTApZ2MC+oeSUguz2Mz8WfJDrEDTI01c5pYWH6InBIq7PMUdnuJLnvqPCSP5DL30GAbkk35cLC0amlqYSWvUbwXC1j2enIoHGinxgcIfL2appTEmZAAr0LbnHXqF6Ff+nwXWmuBJmeU5hKrtbpYa4/4cOaTGPdIeSxwDKtHQEaUGV3wx7sloNS7glQcidTxr6DCtlYbFlt9yq1kAvjElyhUWhitioqH+ViX6L5jPyUTUhIBfTAv0xtOAqkAT0TkG0bmOe1Y1LuCVKYHc0nLBYAfWwEzqrGZi0HYJWM2aAtbcE0jBtEBm4oH625PqhCu+5gtmdMX99Qa3mjUKfG9c8P1jkidV0yL98r5InDMiFWdEQtXbknqLuarUYFiuVsxyDTFRncNEmsxmb9vuQVz6/mr8Uv8H9i6NJ4i2cDYAAAAASUVORK5CYII=')] after:bg-contain cursor-pointer"
+          >
+            <input
+              class="invisible"
+              type="color"
+              name="color"
+              id="colorChanger"
+              oninput="changeTheme(event)"
+            />
+          </label>
+        </div>
       </header>
       <main class="w-full flex flex-col justify-center items-center">
         <div
@@ -83,7 +97,7 @@
               class="tool-btn"
               data-filter="time"
               onclick="timeFilter(event)"
-              data-time="9999"
+              data-time="30"
             >
               30s
             </button>
@@ -112,11 +126,11 @@
             <button class="tool-btn" onclick="resetFilters()">Reset</button>
           </div>
         </div>
-        <input id="mobileInput" class="hidden" />
+        <input id="mobileInput" class="w-0 h-0 -z-30" />
+        <!-- <input id="mobileInput" type="text" /> -->
         <div
-          class="words-container md:md:w-4/6 min-h-[0px] max-h-[120px] mb-12 flex flex-wrap content-start overflow-x-auto focus:outline-none scrollbar-hide relative scroll-mt-10;"
+          class="words-container md:md:w-4/6 min-h-[0px] max-h-[120px] mb-12 flex flex-wrap content-start overflow-x-auto focus:outline-none scrollbar-hide relative scroll-mt-10 text-xl md:text-[24px]"
           tabindex="0"
-          style="scroll-margin-top: 20px"
         ></div>
         <div class="cursor"></div>
         <div

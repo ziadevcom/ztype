@@ -223,6 +223,8 @@ const state = {
 
 // Selecting most used / important dom elements
 const wordsContainer = document.querySelector(".words-container");
+// Hidden mobile input to detect user input on virtual keyboards
+const mobileInput = document.getElementById("mobileInput");
 
 function addfilter(event) {
   // implementing
@@ -243,6 +245,7 @@ function addfilter(event) {
   target.classList.toggle("active-tool-btn");
   updateWords(filters.punctuation, filters.numbers);
   focusWordsDiv();
+  updateCursor();
 }
 
 // Handle Time Filter
@@ -262,6 +265,7 @@ function timeFilter(event) {
   timeDiv.innerText = filters.time;
   localStorage.setItem("filters", JSON.stringify(filters));
   focusWordsDiv();
+  updateCursor();
 }
 
 // Function to update the words in UI, can take a parameter of puncuation (true or false)
@@ -275,7 +279,7 @@ function updateWords(punctuation, numbers) {
       word = String(word);
       let wordDiv = document.createElement("div");
       wordDiv.className =
-        "word font-normal md:text-2xl text-[#646669] mr-2 mb-2 md:mr-3 mb-3 select-none	";
+        "word font-normal text-secondary/20 mr-2 mb-2 md:mr-3 mb-3 select-none	";
 
       // Make the first word active by adding a data attribute
       if (index === 0) {
@@ -284,12 +288,7 @@ function updateWords(punctuation, numbers) {
       // Looping over each character in word
       for (let i = 0; i < word.length; i++) {
         let charSpan = document.createElement("span");
-        charSpan.classList.add(
-          "transition-colors",
-          "duration-200",
-          "text-xl",
-          "md:text-[24px]"
-        );
+        charSpan.classList.add("transition-colors", "duration-200");
         charSpan.innerText = word[i];
         wordDiv.appendChild(charSpan);
       }
@@ -388,33 +387,8 @@ function getRandomIntInclusive(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min); // The maximum is inclusive and the minimum is inclusive
 }
 
-// When words div is in focus, listen to the keydown events
-document.onkeydown = function (event) {
-  // because events capture and bubble, we dont want this function to execute if clicked on any relevant buttons such as filters or restart buttons
-  if (
-    event.target.classList.contains("tool-btn") ||
-    event.target.classList.contains("restartTest")
-  ) {
-    return;
-  }
-
-  if (state.timerFinished) {
-    return;
-  }
-
-  if (event.key === "Backspace") {
-    backspace(event);
-  }
-
-  if (!isValidTypingKey(event)) {
-    return;
-  }
-
-  focusWordsDiv();
-};
-
 function userTypes(event) {
-  // TODO
+  document.querySelector("#mobileInput").value = event.key;
   // Our program to assume that there is only single word.
   // Once we are done with our current word, update the current word to be next word.
   // Error, mistypes
@@ -426,6 +400,7 @@ function userTypes(event) {
   // Update global allt typed entries
   state.allLettersTyped++;
   // The number of correct words user typed.
+  console.log({ timerRunning: state.timerRunning });
   if (!state.timerRunning) {
     startCountdown();
   }
@@ -434,7 +409,8 @@ function userTypes(event) {
   const userLetter = event.key;
 
   if (!state.isWord) {
-    if (event.keyCode == 32) {
+    // If user types space, move to next word.
+    if (event.key == " ") {
       event.preventDefault();
       state.word = state.word.nextSibling;
       state.isWord = true;
@@ -530,14 +506,11 @@ function backspace(event) {
 
 function updateCursor() {
   let letterRect = state.letter.getBoundingClientRect();
-  console.log("Before Scrolling", letterRect);
-  console.log(state.letter);
 
   // Subtracting Distance of viewport to the top of the wordsContainer from top of the viewport to the top of cursor gives us the position of the cursor relative to the wordsContainer Div
   const wordsContainerRect = wordsContainer.getBoundingClientRect();
   let cursorPositionRelativeToWordsContainer =
     letterRect.top - wordsContainerRect.top;
-  console.log(cursorPositionRelativeToWordsContainer);
   // If current words is in the middle of the wordsContainer div then scroll into view
   // i.e scroll the current word into view if the user is typing at least on the middle line of the text
   if (cursorPositionRelativeToWordsContainer >= wordsContainerRect.height / 2) {
@@ -545,12 +518,9 @@ function updateCursor() {
       top: wordsContainer.scrollTop + wordsContainerRect.height / 3,
       behavior: "smooth",
     });
-    console.log("After Scrolling", state.letter.getBoundingClientRect());
-    console.log(state.letter);
     return;
   }
 
-  console.log("letterRect", letterRect);
   let cursorDiv = document.querySelector(".cursor");
   cursorDiv.style.top = `${letterRect.top}px`;
   cursorDiv.style.left = `${letterRect.left}px`;
@@ -564,6 +534,7 @@ function updateCursor() {
 }
 
 function startCountdown() {
+  console.log("startcpountdown");
   state.timerRunning = true;
   let timeLeft = filters.time;
   let timer = setInterval(() => {
@@ -588,17 +559,23 @@ function startCountdown() {
   }, 1000);
 }
 
+// displayUI -> display results or normal wordsContainer depending on the showResults parameter
 function displayUI(showResults) {
+  const timeContainer = document.querySelector("#time-container");
+  const resultsContainer = document.querySelector(".results-container");
+  const cursorDIV = document.querySelector(".cursor");
+
   if (!showResults) {
+    wordsContainer.classList.remove("hidden");
     document.querySelector("#time-container").innerHTML = filters.time;
     updateWords(filters.punctuation, filters.numbers);
     updateCursor();
     return;
   }
-  document.querySelector(".cursor").classList.add("hidden");
-  wordsContainer.classList.add("hidden");
-  document.querySelector("#time-container").classList.add("hidden");
-  document.querySelector(".results-container").classList.remove("hidden");
+  cursorDIV.classList.toggle("hidden");
+  wordsContainer.classList.toggle("hidden");
+  timeContainer.classList.toggle("invisible");
+  resultsContainer.classList.remove("hidden");
   let wpm = calculateWPM();
   let accuracy = calculateAccuracy();
   let results = `<h3 class="text-secondary text-2xl mr-6">WPM: ${wpm}</h3>
@@ -611,6 +588,9 @@ function calculateWPM() {
   const uncorrected = state.uncorrectedErrors;
   let gpm = (state.allLettersTyped / 5) / time // prettier-ignore
   let netWPM = gpm - (uncorrected / time); // prettier-ignore
+  if (netWPM < 0) {
+    netWPM = 0;
+  }
   return Math.floor(netWPM);
 }
 
@@ -681,15 +661,16 @@ function handleFiltersPersists() {
 
 // Resets the filter to the initial state (time = 30s, everything else false)
 function resetFilters() {
+  focusWordsDiv();
   let resetFilters = {
     time: 30,
     punctuation: false,
     numbers: false,
   };
-
   localStorage.setItem("filters", JSON.stringify(resetFilters));
   handleFiltersPersists();
   updateWords(false, filters.numbers);
+  updateCursor();
 }
 
 // Remove the focus from whatever element is currently focused and focus on the words div.
@@ -700,8 +681,21 @@ function focusWordsDiv() {
 
 // Restart the test when clicked on restart button in UI
 function restartTest() {
-  state.timerFinished = true;
-  focusWordsDiv();
+  const resultsContainer = document.querySelector(".results-container");
+  const timeContainer = document.querySelector("#time-container");
+  const cursorDIV = document.querySelector(".cursor");
+  // Check if results Div is hidden, if it is, just update the ui normally
+  if (resultsContainer.classList.contains("hidden")) {
+    state.timerFinished = true;
+    state.timerRunning = false;
+    focusWordsDiv();
+    return;
+  }
+  // otherwise, hide resutls and ten display
+  resultsContainer.classList.add("hidden");
+  timeContainer.classList.toggle("invisible");
+  cursorDIV.classList.remove("hidden");
+  displayUI(false);
 }
 
 // Function to check if user pressed a valid key to type, i.e avoid keys like ctrl, shift etc
@@ -732,14 +726,34 @@ document.addEventListener("DOMContentLoaded", () => {
   focusWordsDiv();
 });
 
-// Update cursor when window resizes because it was not working properly without it
-window.onresize = () => {
-  updateCursor();
-};
+// When words div is in focus, listen to the keydown events
+document.onkeydown = function (event) {
+  // because events capture and bubble, we dont want this function to execute if clicked on any relevant buttons such as filters or restart buttons
+  // If device is a mobile or table, return
+  if (isMobileOrTablet()) {
+    return;
+  }
 
-// Disable scrolling on wordsContainer with mouse
-wordsContainer.onwheel = (event) => {
-  event.preventDefault();
+  if (
+    event.target.classList.contains("tool-btn") ||
+    event.target.classList.contains("restartTest")
+  ) {
+    return;
+  }
+
+  if (state.timerFinished) {
+    return;
+  }
+
+  if (event.key === "Backspace") {
+    backspace(event);
+  }
+
+  if (!isValidTypingKey(event)) {
+    return;
+  }
+  // Focus the words container if the device is not a mobile or table
+  focusWordsDiv();
 };
 
 // Handle user typing event
@@ -752,12 +766,41 @@ wordsContainer.onkeydown = (event) => {
 };
 
 // Handle user typing for touchscreens
-wordsContainer.touchstart = () => {
-  document.getElementById("mobileInput").focus();
+wordsContainer.onclick = () => {
+  // Focus on the hidden input tag when clicked
+  document.activeElement.blur();
+  mobileInput.focus();
+  mobileInput.value = "@";
+  return;
 };
 
+// Grabbing user typed key on touch screens / virutal keyboards
+mobileInput.onkeyup = () => {
+  console.log("mobileInput onchange");
+  const userInput = mobileInput.value;
+  const event = {
+    key: null,
+    preventDefault: () => {
+      return;
+    },
+  };
+  // Handle backspace
+  if (userInput === "") {
+    backspace();
+    mobileInput.value = "@";
+    console.log("backspace()");
+    return;
+  }
+  // Handle any other input
+  event.key = userInput[1];
+  userTypes(event);
+  console.log({ userInput, event });
+  // Reset the input
+  mobileInput.value = "@";
+};
 // Listen to the scroll event
 // update the letter Rect accordingly
+// When scrolled inside wordsContainer div, update the cursor.
 wordsContainer.onscroll = () => {
   let timer = null;
   if (timer !== null) {
@@ -767,4 +810,49 @@ wordsContainer.onscroll = () => {
     // update the letter Rect accordingly
     updateCursor();
   }, 200);
+};
+
+// Update cursor when window resizes because it was not working properly without it
+window.onresize = () => {
+  updateCursor();
+};
+
+// Disable scrolling on wordsContainer with mouse
+wordsContainer.onwheel = (event) => {
+  event.preventDefault();
+};
+
+// Change theme function, attached to color input in the header
+function changeTheme(event) {
+  // Get RGB channels of hexadecimal color
+  const color = event.target.value;
+  let HexR = color.slice(1, 3);
+  let HexG = color.slice(3, 5);
+  let HexB = color.slice(5, 7);
+  // Convert hexadecimal RGB channels into decimal rgb channels
+  let decR = parseInt(HexR, 16);
+  let decG = parseInt(HexG, 16);
+  let decB = parseInt(HexB, 16);
+  let accentColor = `${decR} ${decG} ${decB}`;
+  // Update the css variable in order to change colors
+  let root = document.documentElement;
+  root.style.setProperty("--color-secondary", accentColor);
+}
+
+// Detect mobile browser
+// https://stackoverflow.com/questions/11381673/detecting-a-mobile-browser
+const isMobileOrTablet = () => {
+  let check = false;
+  (function (a) {
+    if (
+      /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(
+        a
+      ) ||
+      /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(
+        a.substr(0, 4)
+      )
+    )
+      check = true;
+  })(navigator.userAgent || navigator.vendor || window.opera);
+  return check;
 };

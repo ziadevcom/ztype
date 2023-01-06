@@ -24,9 +24,9 @@ module.exports = {
           },
         },
       },
-    },
-    animation: {
-      blink: "blink 0.5s ease-in-out infinite",
+      animation: {
+        blink: "blink 0.5s ease-in-out infinite",
+      },
     },
     fontFamily: {
       primary: ["Roboto Mono", "sans-serif"],
