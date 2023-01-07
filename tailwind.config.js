@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 
 module.exports = {
-  content: ["./src/index.html", "./src/logic.js"],
+  content: ["./docs/index.html", "./docs/logic.js"],
   theme: {
     extend: {
       colors: {

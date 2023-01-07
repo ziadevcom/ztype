@@ -105,3 +105,6 @@ dist
 
 # Ignore ngrok.exe
 ngrok.exe
+
+# Ignore todo list
+todoList.exe

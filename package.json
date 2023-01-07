@@ -6,11 +6,11 @@
     "random-words": "^1.2.0",
     "tailwind-scrollbar-hide": "^1.1.7"
   },
-  "name": "ztype2",
+  "name": "zType",
   "version": "1.0.0",
   "main": "tailwind.config.js",
   "scripts": {
-    "build-css": "npx tailwindcss -i ./tailwind.css -o ./src/styles.css --watch",
+    "build-css": "npx tailwindcss -i ./tailwind.css -o ./docs/styles.css --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

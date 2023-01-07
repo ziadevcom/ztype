@@ -79,6 +79,7 @@
               name="color"
               id="colorChanger"
               oninput="changeTheme(event)"
+              onchange="storeTheme(event)"
             />
           </label>
         </div>
@@ -129,17 +130,17 @@
         <input id="mobileInput" class="w-0 h-0 -z-30" />
         <!-- <input id="mobileInput" type="text" /> -->
         <div
-          class="words-container md:md:w-4/6 min-h-[0px] max-h-[120px] mb-12 flex flex-wrap content-start overflow-x-auto focus:outline-none scrollbar-hide relative scroll-mt-10 text-xl md:text-[24px]"
+          class="words-container md:md:w-4/6 min-h-[120px] max-h-[120px] mb-12 flex flex-wrap content-start overflow-x-auto focus:outline-none scrollbar-hide relative text-xl md:text-[24px]"
           tabindex="0"
         ></div>
-        <div class="cursor"></div>
+        <div class="cursor invisible"></div>
         <div
-          class="results-container hidden md:w-4/6 min-h-[300px] max-h-[300px] flex flex-col justify-center"
+          class="results-container hidden md:w-4/6 max-h-[120px] flex flex-col justify-center mb-12"
         >
           <h2 class="text-3xl text-secondary">Time Finished.</h2>
           <p class="text-bright mt-4 mb-4">
             Following are your results. To take the test again, click on reload
-            button in top right.
+            icon below.
           </p>
           <div id="results" class="flex flex-row"></div>
         </div>
@@ -163,14 +164,25 @@
           </svg>
         </button>
       </main>
-      <footer
-        class="font-light text-sm md:text-base w-full md:pb-8 text-center text-white"
-      >
-        Developed By Zia
+      <footer class="font-light text-sm w-full md:pb-8 text-center text-white">
+        Developed By
+        <a
+          href="https://www.linkedin.com/in/ziadev/"
+          class="border-b-2 border-secondary hover:text-secondary"
+          >Zia</a
+        >
       </footer>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timer/1.3.0/moment-timer.min.js"></script>
+    <script>
+      // Get theme color from local storage and update ui
+      const themeColor = localStorage.getItem("color-secondary");
+      if (themeColor) {
+        if (themeColor) {
+          let root = document.documentElement;
+          root.style.setProperty("--color-secondary", themeColor);
+        }
+      }
+    </script>
     <script src="./logic.js"></script>
   </body>
 </html>
